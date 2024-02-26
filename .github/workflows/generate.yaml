@@ -34,7 +34,7 @@ jobs:
           [ -n "$(go env GOPATH)" ] && export PATH="$(go env GOPATH)/bin:${PATH}"
 
       - name: Install Mockery
-        run: go install github.com/vektra/mockery/v2@v2.42.0
+        run: go install github.com/vektra/mockery/v2@v2.40.1
 
       - name: Generate proto
         run: buf generate
