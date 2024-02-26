@@ -1,0 +1,4 @@
+version: v1
+name: buf.build/gorobot-nz/test-actions
+deps:
+  - buf.build/googleapis/googleapis

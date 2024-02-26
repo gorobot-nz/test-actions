@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message A {
+  int64 field = 1;
+}
+
+service AService{
+  rpc Test(A) returns (A);
+}
