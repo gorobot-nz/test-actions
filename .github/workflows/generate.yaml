@@ -1,0 +1,54 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Generate
+
+on:
+  push:
+    branches:
+      - "master"
+      - "dev*"
+  pull_request:
+    branches:
+      - "master"
+      - "dev*"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Install Buf
+        run: |
+          GO111MODULE=on GOBIN=/usr/local/bin go install github.com/bufbuild/buf/cmd/buf@v1.14.0
+          go install github.com/bufbuild/buf/cmd/buf@latest
+          go install github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install connectrpc.com/connect/cmd/protoc-gen-connect-go@latest
+          [ -n "$(go env GOBIN)" ] && export PATH="$(go env GOBIN):${PATH}"
+          [ -n "$(go env GOPATH)" ] && export PATH="$(go env GOPATH)/bin:${PATH}"
+
+      - name: Install Mockery
+        run: go install github.com/vektra/mockery/v2@v2.42.0
+
+      - name: Generate proto
+        run: buf generate
+
+      - name: Generate Mockery
+        run: mockery
+
+      - name: Go Mod Tidy
+        run: go mod tidy
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "gorobot.nz@gmail.com"
+          git config --local user.name "Nikita Zhamoidzik"
+          git add .
+          git commit -m "Update proto and mockery"
+          git push
