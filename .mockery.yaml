@@ -1,7 +1,0 @@
-with-expecter: true
-outpkg: "{{.PackageName}}_mocks"
-packages:
-  github.com/gorobot-nz/test-actions/pkg:
-    interfaces:
-      A:
-
